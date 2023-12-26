@@ -100,9 +100,7 @@ export default function Login() {
                       type="submit"
                     >
                       {isLoading ? (
-                        <div className="loader-overlay">
-                          <span className="loader">Loading...</span>
-                        </div>
+                        <span className="spinner-border" />
                       ) : (
                         "Sign In"
                       )}

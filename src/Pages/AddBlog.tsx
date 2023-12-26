@@ -177,13 +177,7 @@ export default function AddBlog() {
                 ) : null}
               </div>
               <button className="btn btn-outline-primary mt-3" type="submit">
-                {isLoading ? (
-                  <div className="loader-overlay">
-                    <span className="loader">Loading...</span>
-                  </div>
-                ) : (
-                  "Add"
-                )}
+                {isLoading ? <span className="spinner-border" /> : "Add"}
               </button>
             </form>
           </div>
