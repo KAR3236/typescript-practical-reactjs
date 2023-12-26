@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-export const addBlogValidation = Yup.object({
+export const addEditBlogValidation = Yup.object({
   title: Yup.string().required(),
   description: Yup.string().required(),
   publised_date: Yup.string().required(),

@@ -11,3 +11,13 @@ export function formatDate(inputDate: any) {
   const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   return formattedDate;
 }
+
+export function date(inputDate: any){
+    const dateObject = new Date(inputDate);
+
+    const year = dateObject.getFullYear();
+    const month = String(dateObject.getMonth() + 1).padStart(2, "0");
+    const day = String(dateObject.getDate()).padStart(2, "0");
+    
+    return `${year}-${month}-${day}`;
+}

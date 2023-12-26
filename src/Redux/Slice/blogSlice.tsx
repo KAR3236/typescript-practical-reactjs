@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const blogSlice = createSlice({
   name: "blog",
   initialState: {
+    datas: [],
     data: {},
     loader: false,
   },
@@ -13,6 +14,9 @@ export const blogSlice = createSlice({
     hideLoader: (state) => {
       state.loader = false;
     },
+    listOfBlog: (state, action) => {
+      return { ...state, datas: action.payload };
+    },
     viewBlog: (state, action) => {
       return { ...state, data: action.payload };
     },
@@ -20,6 +24,6 @@ export const blogSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { showLoader, hideLoader, viewBlog } = blogSlice.actions;
+export const { showLoader, hideLoader, listOfBlog, viewBlog } = blogSlice.actions;
 
 export default blogSlice.reducer;

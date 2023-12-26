@@ -1,45 +1,72 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from "../Components/Layout";
 import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  hideLoader,
-  listOfBlog,
-  showLoader,
-} from "../Redux/Slice/dashboardSlice";
-import { listOfBlogAPI } from "../APIs/blogAPIs";
+import { deleteBlogAPI, listOfBlogAPI } from "../APIs/blogAPIs";
 import { useEffect } from "react";
 import { formatDate } from "../Helpers/formateDate";
+import { hideLoader, listOfBlog, showLoader } from "../Redux/Slice/blogSlice";
+import { toast } from "react-toastify";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const handleLogout = () => {
     Cookies.remove("loginToken");
     window.confirm("Are you sure you want to logout?");
   };
 
-  const handleDelete = () => {
-    window.confirm("Are you sure you want to delete?");
+  function handleDelete(id: number) {
+    const a = window.confirm("Are you sure you want to delete?");
+
+    if (a) {
+      deleteBlogAPI(id)
+        .then((blogData: any) => {
+          if (blogData?.data?.code === 200) {
+            dispatch(hideLoader());
+            toast.success(blogData?.data?.message);
+            listOfBlogAPI().then((listOfBlogData: any) => {
+              if (listOfBlogData?.data?.code === 200) {
+                dispatch(hideLoader());
+                dispatch(listOfBlog(listOfBlogData?.data?.data));
+              }
+            });
+            navigate("/dashboard");
+          } else {
+            dispatch(hideLoader());
+            toast.error(blogData?.data?.message);
+          }
+        })
+        .catch((error: any) => {
+          if (error) {
+            dispatch(hideLoader());
+            toast.error(error?.response?.data?.message);
+          }
+        });
+    }
   };
 
   //Redux
   const dispatch = useDispatch();
-  const isLoading = useSelector((state: any) => state.dashboard.loader);
-  const blogList = useSelector((state: any) => state.dashboard.data);
+  const isLoading = useSelector((state: any) => state.blog.loader);
+  const blogList = useSelector((state: any) => state.blog.datas);
 
   useEffect(() => {
     dispatch(showLoader());
-    listOfBlogAPI()
-      .then((listOfBlogData: any) => {
-        if (listOfBlogData?.data?.code === 200) {
-          dispatch(hideLoader());
-          dispatch(listOfBlog(listOfBlogData?.data?.data));
-        }
-      })
-      .catch((error: any) => {
-        if (error) {
-          dispatch(hideLoader());
-        }
-      });
+    const fetchDataFromApi = async () => {
+      try {
+        await listOfBlogAPI()
+          .then((listOfBlogData: any) => {
+            if (listOfBlogData?.data?.code === 200) {
+              dispatch(hideLoader());
+              dispatch(listOfBlog(listOfBlogData?.data?.data));
+            }
+          })
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        dispatch(hideLoader());
+      }
+    };
+    fetchDataFromApi();
   }, [dispatch]);
 
   let tbodyContent;
@@ -54,7 +81,7 @@ export default function Dashboard() {
         </th>
       </tr>
     );
-  } else if (blogList) {
+  } else if (blogList.length > 0) {
     tbodyContent = blogList.map((blog: any, index: number) => {
       return (
         <tr key={blog.id}>
@@ -79,7 +106,7 @@ export default function Dashboard() {
               Edit
             </Link>
             <button
-              onClick={handleDelete}
+              onClick={() => handleDelete(blog.id)}
               className="btn btn-outline-danger mx-1"
             >
               Delete
@@ -91,7 +118,7 @@ export default function Dashboard() {
   } else {
     tbodyContent = (
       <tr>
-        <th colSpan={7}>
+        <th colSpan={8}>
           <div className="text-center mt-5 mb-5">Data not found...</div>
         </th>
       </tr>

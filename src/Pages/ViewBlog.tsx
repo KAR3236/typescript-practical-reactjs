@@ -7,7 +7,7 @@ import { viewBlogAPI } from "../APIs/blogAPIs";
 import { formatDate } from "../Helpers/formateDate";
 
 export default function ViewBlog() {
-  const { id } = useParams();
+  const { id } = useParams(); 
 
   //Redux
   const dispatch = useDispatch();

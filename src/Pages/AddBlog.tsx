@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Layout from "../Components/Layout";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
-import { addBlogValidation } from "../validation/blogValidation";
+import { addEditBlogValidation } from "../validation/blogValidation";
 import { hideLoader, showLoader } from "../Redux/Slice/loaderSlice";
 import { toast } from "react-toastify";
 import { addBlogAPI } from "../APIs/blogAPIs";
@@ -26,18 +26,18 @@ export default function AddBlog() {
       category: "",
       author: "",
     },
-    validationSchema: addBlogValidation,
+    validationSchema: addEditBlogValidation,
     onSubmit: async (values) => {
       dispatch(showLoader());
       await addBlogAPI(values)
-        .then((registerData: any) => {
-          if (registerData?.data?.code === 201) {
+        .then((blogData: any) => {
+          if (blogData?.data?.code === 201) {
             dispatch(hideLoader());
-            toast.success(registerData?.data?.message);
+            toast.success(blogData?.data?.message);
             navigate("/dashboard");
           } else {
             dispatch(hideLoader());
-            toast.error(registerData?.data?.message);
+            toast.error(blogData?.data?.message);
           }
         })
         .catch((error: any) => {
