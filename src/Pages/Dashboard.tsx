@@ -10,15 +10,18 @@ import { toast } from "react-toastify";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+
   const handleLogout = () => {
-    Cookies.remove("loginToken");
-    window.confirm("Are you sure you want to logout?");
+    const confirm = window.confirm("Are you sure you want to logout?");
+    if (confirm) {
+      Cookies.remove("loginToken");
+      navigate("/");
+    }
   };
 
   function handleDelete(id: number) {
-    const a = window.confirm("Are you sure you want to delete?");
-
-    if (a) {
+    const confirm = window.confirm("Are you sure you want to delete?");
+    if (confirm) {
       deleteBlogAPI(id)
         .then((blogData: any) => {
           if (blogData?.data?.code === 200) {
@@ -133,13 +136,12 @@ export default function Dashboard() {
             <Link className="btn btn-outline-primary" to="/addBlog">
               Create New Blog
             </Link>
-            <Link
+            <button
               className="btn btn-outline-danger float-end"
-              to="/"
               onClick={handleLogout}
             >
               Logout
-            </Link>
+            </button>
           </div>
           <div className="card-body">
             <table className="table table-bordered">
