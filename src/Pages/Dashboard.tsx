@@ -43,7 +43,7 @@ export default function Dashboard() {
           }
         });
     }
-  };
+  }
 
   //Redux
   const dispatch = useDispatch();
@@ -54,13 +54,12 @@ export default function Dashboard() {
     dispatch(showLoader());
     const fetchDataFromApi = async () => {
       try {
-        await listOfBlogAPI()
-          .then((listOfBlogData: any) => {
-            if (listOfBlogData?.data?.code === 200) {
-              dispatch(hideLoader());
-              dispatch(listOfBlog(listOfBlogData?.data?.data));
-            }
-          })
+        await listOfBlogAPI().then((listOfBlogData: any) => {
+          if (listOfBlogData?.data?.code === 200) {
+            dispatch(hideLoader());
+            dispatch(listOfBlog(listOfBlogData?.data?.data));
+          }
+        });
       } catch (error) {
         console.error("Error fetching data:", error);
         dispatch(hideLoader());
