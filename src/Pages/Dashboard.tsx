@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { formatDate } from "../Helpers/formateDate";
 import { hideLoader, listOfBlog, showLoader } from "../Redux/Slice/blogSlice";
 import { toast } from "react-toastify";
+import { Button } from "../Components/commonElements";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -29,29 +30,29 @@ export default function Dashboard() {
             toast.success(blogData?.data?.message);
             listOfBlogAPI().then((listOfBlogData: any) => {
               if (listOfBlogData?.data?.code === 200) {
-                dispatch(hideLoader());
                 dispatch(listOfBlog(listOfBlogData?.data?.data));
               }
             });
             navigate("/dashboard");
           } else {
-            dispatch(hideLoader());
             toast.error(blogData?.data?.message);
           }
         })
         .catch((error: any) => {
           if (error) {
-            dispatch(hideLoader());
             toast.error(error?.response?.data?.message);
           }
+        })
+        .finally(() => {
+          dispatch(hideLoader());
         });
     }
   }
 
   //Redux
   const dispatch = useDispatch();
-  const isLoading = useSelector((state: any) => state.blog.loader);
-  const blogList = useSelector((state: any) => state.blog.datas);
+  const isLoading = useSelector((state: any) => state?.blog?.loader);
+  const blogList = useSelector((state: any) => state?.blog?.datas);
 
   useEffect(() => {
     dispatch(showLoader());
@@ -86,33 +87,34 @@ export default function Dashboard() {
   } else if (blogList.length > 0) {
     tbodyContent = blogList.map((blog: any, index: number) => {
       return (
-        <tr key={blog.id}>
+        <tr key={blog?.id}>
           <td>{index + 1}</td>
-          <td>{blog.title}</td>
-          <td>{blog.description}</td>
-          <td>{formatDate(blog.publised_date)}</td>
-          <td>{formatDate(blog.modify_date)}</td>
-          <td>{blog.status}</td>
-          <td>{blog.author}</td>
+          <td>{blog?.title}</td>
+          <td>{blog?.description}</td>
+          <td>{formatDate(blog?.publised_date)}</td>
+          <td>{formatDate(blog?.modify_date)}</td>
+          <td>{blog?.status}</td>
+          <td>{blog?.author}</td>
           <td>
             <Link
-              to={`/viewBlog/${blog.id}`}
+              to={`/viewBlog/${blog?.id}`}
               className="btn btn-outline-info mx-1"
             >
               View
             </Link>
             <Link
               className="btn btn-outline-success mx-1"
-              to={`/editBlog/${blog.id}`}
+              to={`/editBlog/${blog?.id}`}
             >
               Edit
             </Link>
-            <button
-              onClick={() => handleDelete(blog.id)}
+            <Button
+              onClick={() => handleDelete(blog?.id)}
               className="btn btn-outline-danger mx-1"
+              type="button"
             >
               Delete
-            </button>
+            </Button>
           </td>
         </tr>
       );
@@ -136,12 +138,13 @@ export default function Dashboard() {
             <Link className="btn btn-outline-primary" to="/addBlog">
               Create New Blog
             </Link>
-            <button
+            <Button
               className="btn btn-outline-danger float-end"
               onClick={handleLogout}
+              type="button"
             >
               Logout
-            </button>
+            </Button>
           </div>
           <div className="card-body">
             <table className="table table-bordered">

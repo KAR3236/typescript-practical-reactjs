@@ -1,18 +1,19 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, Params, useParams } from "react-router-dom";
 import Layout from "../Components/Layout";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { hideLoader, showLoader, viewBlog } from "../Redux/Slice/blogSlice";
 import { viewBlogAPI } from "../APIs/blogAPIs";
 import { formatDate } from "../Helpers/formateDate";
+import { toast } from "react-toastify";
 
 export default function ViewBlog() {
-  const { id } = useParams(); 
+  const { id }: Readonly<Params<string>> = useParams();
 
   //Redux
   const dispatch = useDispatch();
-  const isLoading = useSelector((state: any) => state.blog.loader);
-  const viewBlogData = useSelector((state: any) => state.blog.data);
+  const isLoading = useSelector((state: any) => state?.blog?.loader);
+  const viewBlogData = useSelector((state: any) => state?.blog?.data);
 
   useEffect(() => {
     dispatch(showLoader());
@@ -24,9 +25,10 @@ export default function ViewBlog() {
         }
       })
       .catch((error: any) => {
-        if (error) {
-          dispatch(hideLoader());
-        }
+        toast.error(error?.response?.data?.message);
+      })
+      .finally(() => {
+        dispatch(hideLoader());
       });
   }, [dispatch, id]);
 
@@ -44,22 +46,22 @@ export default function ViewBlog() {
     data = (
       <div className="card-body">
         <p className="text-muted">
-          <b>Title:</b> {viewBlogData.title}
+          <b>Title:</b> {viewBlogData?.title}
         </p>
         <p className="text-muted">
-          <b>Description:</b> {viewBlogData.description}
+          <b>Description:</b> {viewBlogData?.description}
         </p>
         <p className="text-muted">
-          <b>Publised Date:</b> {formatDate(viewBlogData.publised_date)}
+          <b>Publised Date:</b> {formatDate(viewBlogData?.publised_date)}
         </p>
         <p className="text-muted">
-          <b>Modify Date:</b> {formatDate(viewBlogData.modify_date)}
+          <b>Modify Date:</b> {formatDate(viewBlogData?.modify_date)}
         </p>
         <p className="text-muted">
-          <b>Status:</b> {viewBlogData.status}
+          <b>Status:</b> {viewBlogData?.status}
         </p>
         <p className="text-muted">
-          <b>Author:</b> {viewBlogData.author}
+          <b>Author:</b> {viewBlogData?.author}
         </p>
       </div>
     );

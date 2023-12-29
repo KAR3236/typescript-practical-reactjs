@@ -7,13 +7,14 @@ import { loginAPI } from "../APIs/userAPIs";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { hideLoader, showLoader } from "../Redux/Slice/loaderSlice";
+import { Button, Form, Input, Label } from "../Components/commonElements";
 
 export default function Login() {
   const navigate = useNavigate();
 
   //Redux
   const dispatch = useDispatch();
-  const isLoading = useSelector((state: any) => state.loader.loader);
+  const isLoading = useSelector((state: any) => state?.loader?.loader);
 
   // Formik for validation and handle event by user
   const formik = useFormik({
@@ -27,7 +28,6 @@ export default function Login() {
       await loginAPI(values)
         .then((loginData: any) => {
           if (loginData?.data?.code === 200) {
-            dispatch(hideLoader());
             Cookies.set("loginToken", loginData?.data?.data?.token, {
               expires: 1,
               path: "/",
@@ -35,15 +35,15 @@ export default function Login() {
             toast.success(loginData?.data?.message);
             navigate("/dashboard");
           } else {
-            dispatch(hideLoader());
             toast.error(loginData?.data?.message);
           }
         })
         .catch((error: any) => {
           if (error) {
-            dispatch(hideLoader());
             toast.error(error?.response?.data?.message);
           }
+        }).finally(() => {
+          dispatch(hideLoader());
         });
     },
   });
@@ -58,44 +58,46 @@ export default function Login() {
                 <h4 className="card-title text-center mb-5 fw-light fs-5">
                   Sign In
                 </h4>
-                <form onSubmit={formik.handleSubmit}>
+                <Form onSubmit={formik.handleSubmit}>
                   <div className="form-floating mb-3">
-                    <input
+                    <Input
                       name="email"
                       type="email"
                       className="form-control"
                       id="floatingInput"
                       placeholder="name@example.com"
-                      value={formik.values.email}
+                      value={formik?.values?.email}
                       onBlur={formik.handleBlur}
                       onChange={formik.handleChange}
                     />
-                    <label htmlFor="floatingInput">Email</label>
-                    {formik.touched.email && formik.errors.email ? (
-                      <div style={{ color: "red" }}>{formik.errors.email}</div>
+                    <Label labelName="Email" htmlFor="floatingInput" />
+                    {formik?.touched?.email && formik?.errors?.email ? (
+                      <div style={{ color: "red" }}>
+                        {formik?.errors?.email}
+                      </div>
                     ) : null}
                   </div>
                   <div className="form-floating mb-3">
-                    <input
+                    <Input
                       name="password"
                       type="password"
                       className="form-control"
                       id="floatingPassword"
                       placeholder="Password"
-                      value={formik.values.password}
+                      value={formik?.values?.password}
                       onBlur={formik.handleBlur}
                       onChange={formik.handleChange}
                     />
-                    <label htmlFor="floatingPassword">Password</label>
-                    {formik.touched.password && formik.errors.password ? (
+                    <Label labelName="Password" htmlFor="floatingPassword" />
+                    {formik?.touched?.password && formik?.errors?.password ? (
                       <div style={{ color: "red" }}>
-                        {formik.errors.password}
+                        {formik?.errors?.password}
                       </div>
                     ) : null}
                   </div>
 
                   <div className="d-grid">
-                    <button
+                    <Button
                       className="btn btn-primary btn-login text-uppercase fw-bold"
                       type="submit"
                     >
@@ -104,7 +106,7 @@ export default function Login() {
                       ) : (
                         "Sign In"
                       )}
-                    </button>
+                    </Button>
                   </div>
                   <hr className="my-4"></hr>
 
@@ -126,7 +128,7 @@ export default function Login() {
                       Active your account
                     </Link>
                   </div>
-                </form>
+                </Form>
               </div>
             </div>
           </div>

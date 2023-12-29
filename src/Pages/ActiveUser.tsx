@@ -6,13 +6,14 @@ import { activeUserValidation } from "../validation/userValidation";
 import { activeUserAPI } from "../APIs/userAPIs";
 import { toast } from "react-toastify";
 import { hideLoader, showLoader } from "../Redux/Slice/loaderSlice";
+import { Button, Form, Input, Label } from "../Components/commonElements";
 
 export default function ActiveUser() {
   const navigate = useNavigate();
 
   //Redux
   const dispatch = useDispatch();
-  const isLoading = useSelector((state: any) => state.loader.loader);
+  const isLoading = useSelector((state: any) => state?.loader?.loader);
 
   // Formik for validation and handle event by user
   const formik = useFormik({
@@ -26,19 +27,18 @@ export default function ActiveUser() {
       await activeUserAPI(values)
         .then((activeUserData: any) => {
           if (activeUserData?.data?.code === 202) {
-            dispatch(hideLoader());
             toast.success(activeUserData?.data?.message);
             navigate("/");
           } else {
-            dispatch(hideLoader());
             toast.error(activeUserData?.data?.message);
           }
         })
         .catch((error: any) => {
           if (error) {
-            dispatch(hideLoader());
             toast.error(error?.response?.data?.message);
           }
+        }).finally(() => {
+          dispatch(hideLoader());
         });
     },
   });
@@ -53,42 +53,47 @@ export default function ActiveUser() {
                 <h4 className="card-title text-center mb-5 fw-light fs-5">
                   Active User
                 </h4>
-                <form onSubmit={formik.handleSubmit}>
+                <Form onSubmit={formik.handleSubmit}>
                   <div className="form-floating mb-3">
-                    <input
+                    <Input
                       name="email"
                       type="email"
                       className="form-control"
                       id="floatingInput"
                       placeholder="name@example.com"
-                      value={formik.values.email}
+                      value={formik?.values?.email}
                       onBlur={formik.handleBlur}
                       onChange={formik.handleChange}
                     />
-                    <label htmlFor="floatingInput">Email</label>
-                    {formik.touched.email && formik.errors.email ? (
-                      <div style={{ color: "red" }}>{formik.errors.email}</div>
+                    <Label labelName="Email" htmlFor="floatingInput" />
+                    {formik?.touched?.email && formik?.errors?.email ? (
+                      <div style={{ color: "red" }}>
+                        {formik?.errors?.email}
+                      </div>
                     ) : null}
                   </div>
                   <div className="form-group mb-3">
-                    <label htmlFor="">Status</label>
+                    <Label labelName="Status" htmlFor="status" />
                     <select
                       name="status"
+                      id="status"
                       className="form-select"
-                      value={formik.values.status}
+                      value={formik?.values?.status}
                       onBlur={formik.handleBlur}
                       onChange={formik.handleChange}
                     >
                       <option value="true">Active</option>
                       <option value="false">Deactive</option>
                     </select>
-                    {formik.touched.status && formik.errors.status ? (
-                      <div style={{ color: "red" }}>{formik.errors.status}</div>
+                    {formik?.touched?.status && formik?.errors?.status ? (
+                      <div style={{ color: "red" }}>
+                        {formik?.errors?.status}
+                      </div>
                     ) : null}
                   </div>
 
                   <div className="d-grid">
-                    <button
+                    <Button
                       className="btn btn-primary btn-login text-uppercase fw-bold"
                       type="submit"
                     >
@@ -99,7 +104,7 @@ export default function ActiveUser() {
                       ) : (
                         "Submit"
                       )}
-                    </button>
+                    </Button>
                   </div>
                   <hr className="my-4"></hr>
 
@@ -111,7 +116,7 @@ export default function ActiveUser() {
                       Log in
                     </Link>
                   </div>
-                </form>
+                </Form>
               </div>
             </div>
           </div>

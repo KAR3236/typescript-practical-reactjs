@@ -6,6 +6,13 @@ import { useFormik } from "formik";
 import { registrationValidation } from "../validation/userValidation";
 import { toast } from "react-toastify";
 import { hideLoader, showLoader } from "../Redux/Slice/loaderSlice";
+import {
+  Button,
+  Form,
+  Input,
+  Label,
+  Select,
+} from "../Components/commonElements";
 
 export default function Registration() {
   const current = new Date().toISOString().split("T")[0];
@@ -13,7 +20,7 @@ export default function Registration() {
 
   //Redux
   const dispatch = useDispatch();
-  const isLoading = useSelector((state: any) => state.loader.loader);
+  const isLoading = useSelector((state: any) => state?.loader?.loader);
 
   // Formik for validation and handle event by user
   const formik = useFormik({
@@ -31,19 +38,19 @@ export default function Registration() {
       await registrationAPI(values)
         .then((registerData: any) => {
           if (registerData?.data?.code === 201) {
-            dispatch(hideLoader());
             toast.success(registerData?.data?.message);
             navigate("/");
           } else {
-            dispatch(hideLoader());
             toast.error(registerData?.data?.message);
           }
         })
         .catch((error: any) => {
           if (error) {
-            dispatch(hideLoader());
             toast.error(error?.response?.data?.message);
           }
+        })
+        .finally(() => {
+          dispatch(hideLoader());
         });
     },
   });
@@ -58,113 +65,116 @@ export default function Registration() {
                 <h5 className="card-title text-center mb-5 fw-light fs-5">
                   Create new account
                 </h5>
-                <form onSubmit={formik.handleSubmit}>
+                <Form onSubmit={formik.handleSubmit}>
                   <div className="form-floating mb-3">
-                    <input
+                    <Input
                       name="email"
                       type="email"
                       className="form-control"
                       id="floatingemail"
                       placeholder="example@gmail.com"
-                      value={formik.values.email}
+                      value={formik?.values?.email}
                       onBlur={formik.handleBlur}
                       onChange={formik.handleChange}
                     />
-                    <label htmlFor="floatingemail">Email</label>
-                    {formik.touched.email && formik.errors.email ? (
-                      <div style={{ color: "red" }}>{formik.errors.email}</div>
+                    <Label labelName="Email" htmlFor="floatingemail" />
+                    {formik?.touched?.email && formik?.errors?.email ? (
+                      <div style={{ color: "red" }}>
+                        {formik?.errors?.email}
+                      </div>
                     ) : null}
                   </div>
                   <div className="form-floating mb-3">
-                    <input
+                    <Input
                       name="password"
                       type="password"
                       className="form-control"
                       id="floatingPassword"
                       placeholder="Password"
-                      value={formik.values.password}
+                      value={formik?.values?.password}
                       onBlur={formik.handleBlur}
                       onChange={formik.handleChange}
                     />
-                    <label htmlFor="floatingPassword">Password</label>
-                    {formik.touched.password && formik.errors.password ? (
+                    <Label labelName="Password" htmlFor="floatingPassword" />
+                    {formik?.touched?.password && formik?.errors?.password ? (
                       <div style={{ color: "red" }}>
-                        {formik.errors.password}
+                        {formik?.errors?.password}
                       </div>
                     ) : null}
                   </div>
                   <div className="form-floating mb-3">
-                    <input
+                    <Input
                       name="first_name"
                       type="text"
                       className="form-control"
                       id="first_name"
                       placeholder="Kaushik"
-                      value={formik.values.first_name}
+                      value={formik?.values?.first_name}
                       onBlur={formik.handleBlur}
                       onChange={formik.handleChange}
                     />
-                    <label htmlFor="first_name">First name</label>
-                    {formik.touched.first_name && formik.errors.first_name ? (
+                    <Label labelName="First name" htmlFor="first_name" />
+                    {formik?.touched?.first_name &&
+                    formik?.errors?.first_name ? (
                       <div style={{ color: "red" }}>
-                        {formik.errors.first_name}
+                        {formik?.errors?.first_name}
                       </div>
                     ) : null}
                   </div>
                   <div className="form-floating mb-3">
-                    <input
+                    <Input
                       name="last_name"
                       type="text"
                       className="form-control"
                       id="last_name"
                       placeholder="Rathod"
-                      value={formik.values.last_name}
+                      value={formik?.values?.last_name}
                       onBlur={formik.handleBlur}
                       onChange={formik.handleChange}
                     />
-                    <label htmlFor="last_name"> Last name</label>
-                    {formik.touched.last_name && formik.errors.last_name ? (
+                    <Label labelName="Last name" htmlFor="last_name" />
+                    {formik?.touched?.last_name && formik?.errors?.last_name ? (
                       <div style={{ color: "red" }}>
-                        {formik.errors.last_name}
+                        {formik?.errors?.last_name}
                       </div>
                     ) : null}
                   </div>
                   <div className="form-floating mb-3">
-                    <input
+                    <Input
                       name="dob"
                       className="form-control"
                       id="date"
                       type="date"
                       placeholder="Enter Date of birth"
                       max={current}
-                      value={formik.values.dob}
+                      value={formik?.values?.dob}
                       onBlur={formik.handleBlur}
                       onChange={formik.handleChange}
                     />
-                    <label htmlFor="date">Date of birth</label>
-                    {formik.touched.dob && formik.errors.dob ? (
-                      <div style={{ color: "red" }}>{formik.errors.dob}</div>
+                    <Label labelName="Date of birth" htmlFor="date" />
+                    {formik?.touched?.dob && formik?.errors?.dob ? (
+                      <div style={{ color: "red" }}>{formik?.errors?.dob}</div>
                     ) : null}
                   </div>
                   <div className="form-group mb-3">
-                    <label htmlFor="">Role</label>
-                    <select
+                    <Label labelName="Role" htmlFor="role" />
+                    <Select
                       name="role"
                       className="form-select"
-                      value={formik.values.role}
+                      id="role"
+                      value={formik?.values?.role}
                       onBlur={formik.handleBlur}
                       onChange={formik.handleChange}
-                    >
-                      <option value="">Select your role</option>
-                      <option value="Admin">Admin</option>
-                      <option value="User">User</option>
-                    </select>
-                    {formik.touched.role && formik.errors.role ? (
-                      <div style={{ color: "red" }}>{formik.errors.role}</div>
+                      defaultOption="Select your role"
+                      defaultValue=""
+                      options={["Admin", "User"]}
+                    />
+                    {formik?.touched?.role && formik?.errors?.role ? (
+                      <div style={{ color: "red" }}>{formik?.errors?.role}</div>
                     ) : null}
                   </div>
                   <div className="d-grid">
-                    <button
+                    <Button
                       className="btn btn-primary btn-login text-uppercase fw-bold"
                       type="submit"
                     >
@@ -173,7 +183,7 @@ export default function Registration() {
                       ) : (
                         "Sign Up"
                       )}
-                    </button>
+                    </Button>
                   </div>
                   <hr className="my-4"></hr>
 
@@ -185,7 +195,7 @@ export default function Registration() {
                       Log in
                     </Link>
                   </div>
-                </form>
+                </Form>
               </div>
             </div>
           </div>

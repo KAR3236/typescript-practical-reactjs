@@ -6,6 +6,7 @@ import { addEditBlogValidation } from "../validation/blogValidation";
 import { hideLoader, showLoader } from "../Redux/Slice/loaderSlice";
 import { toast } from "react-toastify";
 import { addBlogAPI } from "../APIs/blogAPIs";
+import { Button, Form, Input, Label, Select } from "../Components/commonElements";
 
 export default function AddBlog() {
   const current = new Date().toISOString().split("T")[0];
@@ -13,7 +14,7 @@ export default function AddBlog() {
 
   //Redux
   const dispatch = useDispatch();
-  const isLoading = useSelector((state: any) => state.loader.loader);
+  const isLoading = useSelector((state: any) => state?.loader?.loader);
 
   // Formik for validation and handle event by user
   const formik = useFormik({
@@ -32,19 +33,19 @@ export default function AddBlog() {
       await addBlogAPI(values)
         .then((blogData: any) => {
           if (blogData?.data?.code === 201) {
-            dispatch(hideLoader());
             toast.success(blogData?.data?.message);
             navigate("/dashboard");
           } else {
-            dispatch(hideLoader());
             toast.error(blogData?.data?.message);
           }
         })
         .catch((error: any) => {
           if (error) {
-            dispatch(hideLoader());
             toast.error(error?.response?.data?.message);
           }
+        })
+        .finally(() => {
+          dispatch(hideLoader());
         });
     },
   });
@@ -60,126 +61,130 @@ export default function AddBlog() {
             </Link>
           </div>
           <div className="card-body">
-            <form onSubmit={formik.handleSubmit}>
+            <Form onSubmit={formik.handleSubmit}>
               <div className="form-group">
-                <label htmlFor="title">Title</label>
-                <input
+                <Label labelName="Title" htmlFor="title" />
+                <Input
                   name="title"
                   type="text"
                   className="form-control"
                   id="title"
-                  value={formik.values.title}
+                  placeholder="Enter title"
+                  value={formik?.values?.title}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                 />
-                {formik.touched.title && formik.errors.title ? (
-                  <div style={{ color: "red" }}>{formik.errors.title}</div>
+                {formik?.touched?.title && formik?.errors?.title ? (
+                  <div style={{ color: "red" }}>{formik?.errors?.title}</div>
                 ) : null}
               </div>
               <div className="form-group mt-2">
-                <label htmlFor="description">Description</label>
+                <Label labelName="Description" htmlFor="description" />
                 <textarea
                   name="description"
                   className="form-control"
                   id="description"
                   rows={3}
-                  value={formik.values.description}
+                  value={formik?.values?.description}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                 ></textarea>
-                {formik.touched.description && formik.errors.description ? (
+                {formik?.touched?.description && formik?.errors?.description ? (
                   <div style={{ color: "red" }}>
-                    {formik.errors.description}
+                    {formik?.errors?.description}
                   </div>
                 ) : null}
               </div>
               <div className="form-group mt-2">
-                <label htmlFor="publisedDate">Publised Date</label>
-                <input
+                <Label labelName="Publised Date" htmlFor="publisedDate" />
+                <Input
                   name="publised_date"
                   className="form-control"
                   id="publisedDate"
                   type="date"
                   max={current}
-                  value={formik.values.publised_date}
+                  value={formik?.values?.publised_date}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                 />
-                {formik.touched.publised_date && formik.errors.publised_date ? (
+                {formik?.touched?.publised_date &&
+                formik?.errors?.publised_date ? (
                   <div style={{ color: "red" }}>
-                    {formik.errors.publised_date}
+                    {formik?.errors?.publised_date}
                   </div>
                 ) : null}
               </div>
               <div className="form-group mt-2">
-                <label htmlFor="modifyDate">Modify Date</label>
-                <input
+                <Label labelName="Modify Date" htmlFor="modifyDate" />
+                <Input
                   name="modify_date"
                   className="form-control"
                   id="modifyDate"
                   type="date"
                   max={current}
-                  value={formik.values.modify_date}
+                  value={formik?.values?.modify_date}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                 />
-                {formik.touched.modify_date && formik.errors.modify_date ? (
+                {formik?.touched?.modify_date && formik?.errors?.modify_date ? (
                   <div style={{ color: "red" }}>
-                    {formik.errors.modify_date}
+                    {formik?.errors?.modify_date}
                   </div>
                 ) : null}
               </div>
               <div className="form-group mt-2">
-                <label htmlFor="">Status</label>
-                <select
+                <Label labelName="Status" htmlFor="status" />
+                <Select
                   name="status"
+                  id="status"
                   className="form-select"
-                  value={formik.values.status}
+                  value={formik?.values?.status}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
-                >
-                  <option value="">Select status</option>
-                  <option value="Publish">Publish</option>
-                  <option value="Unpublish">Unpublish</option>
-                </select>
-                {formik.touched.status && formik.errors.status ? (
-                  <div style={{ color: "red" }}>{formik.errors.status}</div>
+                  defaultOption="Select status"
+                  defaultValue=""
+                  options={["Publish", "Unpublish"]}
+                />
+                {formik?.touched?.status && formik?.errors?.status ? (
+                  <div style={{ color: "red" }}>{formik?.errors?.status}</div>
                 ) : null}
               </div>
               <div className="form-group mt-2">
-                <label htmlFor="category">Category</label>
-                <input
+                <Label labelName="Category" htmlFor="category" />
+                <Input
                   name="category"
                   type="number"
                   className="form-control"
                   id="category"
-                  value={formik.values.category}
+                  placeholder="Enter category"
+                  value={formik?.values?.category}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                 />
-                {formik.touched.category && formik.errors.category ? (
-                  <div style={{ color: "red" }}>{formik.errors.category}</div>
+                {formik?.touched?.category && formik?.errors?.category ? (
+                  <div style={{ color: "red" }}>{formik?.errors?.category}</div>
                 ) : null}
               </div>
               <div className="form-group mt-2">
-                <label htmlFor="author">Author</label>
-                <input
+                <Label labelName="Author" htmlFor="author" />
+                <Input
                   name="author"
                   type="text"
                   className="form-control"
                   id="author"
-                  value={formik.values.author}
+                  placeholder="Enter author"
+                  value={formik?.values?.author}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                 />
-                {formik.touched.author && formik.errors.author ? (
-                  <div style={{ color: "red" }}>{formik.errors.author}</div>
+                {formik?.touched?.author && formik?.errors?.author ? (
+                  <div style={{ color: "red" }}>{formik?.errors?.author}</div>
                 ) : null}
               </div>
-              <button className="btn btn-outline-primary mt-3" type="submit">
+              <Button className="btn btn-outline-primary mt-3" type="submit">
                 {isLoading ? <span className="spinner-border" /> : "Add"}
-              </button>
-            </form>
+              </Button>
+            </Form>
           </div>
         </div>
       </div>

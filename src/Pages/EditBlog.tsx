@@ -8,6 +8,7 @@ import { useFormik } from "formik";
 import { addEditBlogValidation } from "../validation/blogValidation";
 import { toast } from "react-toastify";
 import { date } from "../Helpers/formateDate";
+import { Button, Form, Input, Label, Select } from "../Components/commonElements";
 
 export default function EditBlog() {
   const { id } = useParams();
@@ -16,7 +17,7 @@ export default function EditBlog() {
   //Redux
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isLoading = useSelector((state: any) => state.blog.loader);
+  const isLoading = useSelector((state: any) => state?.blog?.loader);
 
   // Formik for validation and handle event by user
   const formik = useFormik({
@@ -35,7 +36,6 @@ export default function EditBlog() {
       await editBlogAPI(id, values)
         .then((blogData: any) => {
           if (blogData?.data?.code === 202) {
-            dispatch(hideLoader());
             toast.success(blogData?.data?.message);
             listOfBlogAPI().then((listOfBlogData: any) => {
               if (listOfBlogData?.data?.code === 200) {
@@ -44,15 +44,16 @@ export default function EditBlog() {
             });
             navigate("/dashboard");
           } else {
-            dispatch(hideLoader());
             toast.error(blogData?.data?.message);
           }
         })
         .catch((error: any) => {
           if (error) {
-            dispatch(hideLoader());
             toast.error(error?.response?.data?.message);
           }
+        })
+        .finally(() => {
+          dispatch(hideLoader());
         });
     },
   });
@@ -84,10 +85,10 @@ export default function EditBlog() {
             </Link>
           </div>
           <div className="card-body">
-            <form onSubmit={formik.handleSubmit}>
+            <Form onSubmit={formik.handleSubmit}>
               <div className="form-group">
-                <label htmlFor="title">Title</label>
-                <input
+                <Label labelName="Title" htmlFor="title" />
+                <Input
                   name="title"
                   type="text"
                   className="form-control"
@@ -96,99 +97,100 @@ export default function EditBlog() {
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                 />
-                {formik.touched.title && formik.errors.title ? (
-                  <div style={{ color: "red" }}>{formik.errors.title}</div>
+                {formik?.touched?.title && formik?.errors?.title ? (
+                  <div style={{ color: "red" }}>{formik?.errors?.title}</div>
                 ) : null}
               </div>
               <div className="form-group mt-2">
-                <label htmlFor="description">Description</label>
+                <Label labelName="Description" htmlFor="description" />
                 <textarea
                   name="description"
                   className="form-control"
                   id="description"
                   rows={3}
-                  value={formik.values.description}
+                  value={formik?.values?.description}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                 ></textarea>
-                {formik.touched.description && formik.errors.description ? (
+                {formik?.touched?.description && formik?.errors?.description ? (
                   <div style={{ color: "red" }}>
-                    {formik.errors.description}
+                    {formik?.errors?.description}
                   </div>
                 ) : null}
               </div>
               <div className="form-group mt-2">
-                <label htmlFor="publisedDate">Publised Date</label>
-                <input
+                <Label labelName="Publised Date" htmlFor="publisedDate" />
+                <Input
                   name="publised_date"
                   className="form-control"
                   id="publisedDate"
                   type="date"
                   max={current}
-                  value={date(formik.values.publised_date)}
+                  value={date(formik?.values?.publised_date)}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                 />
-                {formik.touched.publised_date && formik.errors.publised_date ? (
+                {formik?.touched?.publised_date &&
+                formik?.errors?.publised_date ? (
                   <div style={{ color: "red" }}>
-                    {formik.errors.publised_date}
+                    {formik?.errors?.publised_date}
                   </div>
                 ) : null}
               </div>
               <div className="form-group mt-2">
-                <label htmlFor="modifyDate">Modify Date</label>
-                <input
+                <Label labelName="Modify Date" htmlFor="modifyDate" />
+                <Input
                   name="modify_date"
                   className="form-control"
                   id="modifyDate"
                   type="date"
                   max={current}
-                  value={date(formik.values.modify_date)}
+                  value={date(formik?.values?.modify_date)}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                 />
-                {formik.touched.modify_date && formik.errors.modify_date ? (
+                {formik?.touched?.modify_date && formik?.errors?.modify_date ? (
                   <div style={{ color: "red" }}>
-                    {formik.errors.modify_date}
+                    {formik?.errors?.modify_date}
                   </div>
                 ) : null}
               </div>
               <div className="form-group mt-2">
-                <label htmlFor="">Status</label>
-                <select
+                <Label labelName="Status" htmlFor="status" />
+                <Select
                   name="status"
+                  id="status"
                   className="form-select"
-                  value={formik.values.status}
+                  value={formik?.values?.status}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
-                >
-                  <option value="">Select status</option>
-                  <option value="Publish">Publish</option>
-                  <option value="Unpublish">Unpublish</option>
-                </select>
-                {formik.touched.status && formik.errors.status ? (
-                  <div style={{ color: "red" }}>{formik.errors.status}</div>
+                  defaultOption="Select status"
+                  defaultValue=""
+                  options={["Publish", "Unpublish"]}
+                />
+                {formik?.touched?.status && formik?.errors?.status ? (
+                  <div style={{ color: "red" }}>{formik?.errors?.status}</div>
                 ) : null}
               </div>
               <div className="form-group mt-2">
-                <label htmlFor="author">Author</label>
-                <input
+                <Label labelName="Author" htmlFor="author" />
+                <Input
                   name="author"
                   type="text"
                   className="form-control"
                   id="author"
-                  value={formik.values.author}
+                  value={formik?.values?.author}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                 />
-                {formik.touched.author && formik.errors.author ? (
-                  <div style={{ color: "red" }}>{formik.errors.author}</div>
+                {formik?.touched?.author && formik?.errors?.author ? (
+                  <div style={{ color: "red" }}>{formik?.errors?.author}</div>
                 ) : null}
               </div>
-              <button className="btn btn-outline-primary mt-3" type="submit">
+              <Button className="btn btn-outline-primary mt-3" type="submit">
                 {isLoading ? <span className="spinner-border" /> : "Edit"}
-              </button>
-            </form>
+              </Button>
+            </Form>
           </div>
         </div>
       </div>
